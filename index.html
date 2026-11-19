@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Store</title>
+<link rel="icon" href="images/logo.png">
+<style>
+:root{
+  --bg:#0b0f14; --card:#131a22; --text:#f2f4f7; --muted:#9aa5b1;
+  --line:#243040; --red:#E0201B; --navy:#101B26; --chip:#18212c;
+}
+body.light{
+  --bg:#ffffff; --card:#f5f7fa; --text:#101B26; --muted:#5b6673;
+  --line:#e1e6ec; --chip:#eef1f5;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:3px solid var(--red);padding:10px 12px}
+.top{display:flex;align-items:center;gap:10px}
+.logo{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#fff}
+.brand{font-size:20px;font-weight:800;flex:1;letter-spacing:.3px}
+.brand span{color:var(--red)}
+#theme{background:var(--chip);color:var(--text);border:1px solid var(--line);border-radius:20px;padding:8px 12px;font-size:14px}
+.search{margin-top:10px}
+.search input{width:100%;padding:11px 14px;border-radius:24px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:15px;outline:none}
+.search input:focus{border-color:var(--red)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 14px;border-radius:20px;border:1px solid var(--line);background:var(--chip);color:var(--text);font-size:13px;white-space:nowrap}
+.chip.on{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
+main{padding:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.item img{width:100%;aspect-ratio:1/1;object-fit:cover;background:#fff;display:block}
+.info{padding:8px 9px 10px;display:flex;flex-direction:column;gap:5px;flex:1}
+.name{font-size:13px;line-height:1.3;font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:34px}
+.price{color:var(--red);font-weight:800;font-size:15px}
+.btn{margin-top:auto;display:block;text-align:center;background:var(--red);color:#fff;text-decoration:none;font-weight:700;font-size:13px;padding:9px 6px;border-radius:10px}
+.btn:active{opacity:.8}
+.empty{text-align:center;color:var(--muted);padding:40px 10px}
+footer{padding:18px 14px 30px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5;border-top:1px solid var(--line);margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <img class="logo" id="logo" src="images/logo.png" alt="" onerror="this.style.display='none'">
+    <div class="brand" id="brand"></div>
+    <button id="theme" type="button">☀️</button>
+  </div>
+  <div class="search"><input id="q" type="search" placeholder="Search products..."></div>
+  <div class="chips" id="chips"></div>
+</header>
+<main>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">No products found.</div>
+</main>
+<footer id="foot"></footer>
+
+<script>
+// ====== CHANGE YOUR BRAND NAME HERE ======
+var BRAND = "KaddyStore";
+// =========================================
+
+document.title = BRAND;
+document.getElementById("brand").textContent = BRAND;
+document.getElementById("foot").innerHTML =
+  "As an AliExpress affiliate, I may earn a commission from qualifying purchases at no extra cost to you.<br>© " +
+  new Date().getFullYear() + " " + BRAND;
+
+var cat = "All", term = "";
+
+function setTheme(light){
+  document.body.classList.toggle("light", light);
+  document.getElementById("theme").textContent = light ? "🌙" : "☀️";
+  try{ localStorage.setItem("theme", light ? "light" : "dark"); }catch(e){}
+}
+var saved = null;
+try{ saved = localStorage.getItem("theme"); }catch(e){}
+setTheme(saved === "light");
+document.getElementById("theme").onclick = function(){
+  setTheme(!document.body.classList.contains("light"));
+};
+
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+
+function drawChips(){
+  var list = ["All"].concat(CATEGORIES);
+  document.getElementById("chips").innerHTML = list.map(function(c){
+    return '<button type="button" class="chip' + (c === cat ? " on" : "") + '" data-c="' + esc(c) + '">' + esc(c) + "</button>";
+  }).join("");
+  Array.prototype.forEach.call(document.querySelectorAll(".chip"), function(b){
+    b.onclick = function(){ cat = b.getAttribute("data-c"); drawChips(); drawGrid(); };
+  });
+}
+
+function drawGrid(){
+  var t = term.toLowerCase();
+  var list = PRODUCTS.filter(function(p){
+    var okCat = cat === "All" || p.category === cat;
+    var okTerm = !t || (p.name + " " + (p.desc || "")).toLowerCase().indexOf(t) > -1;
+    return okCat && okTerm;
+  });
+  document.getElementById("grid").innerHTML = list.map(function(p){
+    return '<div class="item">' +
+      '<img loading="lazy" src="' + esc(p.image) + '" alt="' + esc(p.name) + '">' +
+      '<div class="info"><div class="name">' + esc(p.name) + '</div>' +
+      (p.price ? '<div class="price">' + esc(p.price) + '</div>' : "") +
+      '<a class="btn" href="' + esc(p.link) + '">View on AliExpress</a></div></div>';
+  }).join("");
+  document.getElementById("empty").style.display = list.length ? "none" : "block";
+}
+
+document.getElementById("q").oninput = function(e){ term = e.target.value; drawGrid(); };
+
+function start(){ drawChips(); drawGrid(); }
+
+var s = document.createElement("script");
+s.src = "products.js?t=" + Date.now();
+s.onload = start;
+s.onerror = function(){ document.getElementById("empty").style.display = "block"; document.getElementById("empty").textContent = "Could not load products."; };
+document.body.appendChild(s);
+</script>
+</body>
+  </html>
