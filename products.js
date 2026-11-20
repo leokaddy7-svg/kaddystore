@@ -11,6 +11,14 @@ const CATEGORIES = [
 
 const PRODUCTS = [
   {
+    "name": "The Great Qin Empire's high-end private custom manual machinery, the ceiling watch in the tourbillon modification world",
+    "category": "Travel Essential",
+    "price": "$10,112.16",
+    "link": "https://s.click.aliexpress.com/e/_EQC45eW",
+    "image": "images/p1795170646410.jpg",
+    "desc": ""
+  },
+  {
     "name": "6D Smart Vibration Eye Massager Airbag Compress Eye Care Instrument Bluetooth Music Eye Massage Sleep Mask Eye Relax Fatigue",
     "category": "Creator Essentials",
     "price": "$39.42",
