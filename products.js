@@ -11,6 +11,14 @@ const CATEGORIES = [
 
 const PRODUCTS = [
   {
+    "name": "Cute 10cm Peacock Ornament Acrylic DIY Peacock Standee Flat Peacock Desktop Decor Home Living Room Decoration",
+    "category": "Travel Essential",
+    "price": "$5.02",
+    "link": "https://s.click.aliexpress.com/e/_EyOI69o",
+    "image": "images/p1795170090471.jpg",
+    "desc": ""
+  },
+  {
     "name": "3-Piece Bedding Set Quilt Cover with 2 Pillowcases Red Fox Floral Oriental Art Style All Seasons Machine Washable",
     "category": "Creator Essentials",
     "price": "$34.13",
