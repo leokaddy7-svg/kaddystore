@@ -11,6 +11,14 @@ const CATEGORIES = [
 
 const PRODUCTS = [
   {
+    "name": "Customized Remote Control Lawn Mower, Strong 60° Climbing Ability, Long Battery Life, and Powerful Performance Lawn Mower",
+    "category": "Travel Essential",
+    "price": "$1,506.00",
+    "link": "https://s.click.aliexpress.com/e/_EQayHVc",
+    "image": "images/p1795170784933.jpg",
+    "desc": ""
+  },
+  {
     "name": "The Great Qin Empire's high-end private custom manual machinery, the ceiling watch in the tourbillon modification world",
     "category": "Travel Essential",
     "price": "$10,112.16",
